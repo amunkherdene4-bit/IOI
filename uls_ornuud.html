@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Global Travel | 20 Interactive Countries</title>
+    <title>Дэлхийгээр Аялахуй | 20 Улс</title>
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -26,9 +26,6 @@
             padding: 10px; background: rgba(0,0,0,0.6); border-radius: 5px;
         }
         .menu-toggle div { width: 25px; height: 3px; background: #f1c40f; transition: 0.3s; }
-        .menu-toggle.open .line1 { transform: rotate(45deg) translate(5px, 6px); }
-        .menu-toggle.open .line2 { opacity: 0; }
-        .menu-toggle.open .line3 { transform: rotate(-45deg) translate(5px, -6px); }
 
         /* SIDEBAR */
         .sidebar {
@@ -38,64 +35,55 @@
             transition: 0.5s cubic-bezier(0.77, 0, 0.175, 1); border-right: 2px solid #f1c40f;
         }
         .sidebar.open { left: 0; }
-
         .search-container input {
             width: 100%; padding: 12px 20px; border-radius: 25px; border: 1px solid #f1c40f;
             background: rgba(255,255,255,0.05); color: #fff; outline: none; margin-bottom: 20px;
         }
-
         .country-list { height: calc(100vh - 200px); overflow-y: auto; list-style: none; }
-        .country-item {
-            color: #888; padding: 12px; cursor: pointer; border-radius: 8px;
-            transition: 0.2s; border-bottom: 1px solid rgba(255,255,255,0.05);
-        }
+        .country-item { color: #888; padding: 12px; cursor: pointer; border-radius: 8px; transition: 0.2s; }
         .country-item:hover { background: rgba(241, 196, 15, 0.1); color: #f1c40f; }
         .country-item.active { background: #f1c40f; color: #000; font-weight: 700; }
 
         /* SLIDER */
-        .slider-wrapper { width: 100%; height: 100vh; position: absolute; transition: transform 1s ease-in-out; }
+        .slider-wrapper { width: 100%; height: 100vh; position: absolute; transition: transform 0.8s cubic-bezier(0.65, 0, 0.35, 1); }
         .section {
             width: 100%; height: 100vh; display: flex; align-items: center; justify-content: center;
             background-size: cover; background-position: center; position: relative;
         }
-        .overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.8) 100%); }
-        .content { position: relative; z-index: 10; text-align: center; color: white; padding: 0 15%; }
-        .content h2 { font-family: 'Oswald', sans-serif; font-size: clamp(3rem, 8vw, 6rem); text-transform: uppercase; margin-bottom: 20px; text-shadow: 0 10px 20px rgba(0,0,0,0.5); }
+        .overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); }
+        .content { position: relative; z-index: 10; text-align: center; color: white; padding: 0 10%; }
+        .content h2 { font-family: 'Oswald', sans-serif; font-size: clamp(3rem, 7vw, 5.5rem); text-transform: uppercase; margin-bottom: 10px; text-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+        .content p.slogan { font-size: 1.5rem; font-weight: 300; margin-bottom: 30px; letter-spacing: 2px; color: #f1c40f; text-shadow: 0 2px 10px rgba(0,0,0,0.8); }
 
         .cta-button {
-            padding: 18px 50px; background: #f1c40f; border: none; border-radius: 50px;
-            font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 1rem; text-transform: uppercase;
+            padding: 18px 45px; background: #f1c40f; border: none; border-radius: 50px;
+            font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 0.9rem; text-transform: uppercase; box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
-        .cta-button:hover { background: #fff; transform: scale(1.05); box-shadow: 0 0 30px rgba(241,196,15,0.3); }
+        .cta-button:hover { background: #fff; transform: scale(1.05); }
 
-        /* ENHANCED MODAL */
+        /* MODAL */
         .modal {
             display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.95); align-items: center; justify-content: center;
         }
         .modal-content {
-            background: #fff; width: 95%; max-width: 800px; max-height: 90vh;
-            border-radius: 20px; overflow-y: auto; position: relative; animation: slideIn 0.4s ease;
+            background: #fff; width: 95%; max-width: 900px; max-height: 85vh;
+            border-radius: 15px; overflow-y: auto; position: relative; animation: slideIn 0.3s ease-out;
         }
-        @keyframes slideIn { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        
-        .modal-header-img { width: 100%; height: 350px; background-size: cover; background-position: center; position: relative; }
-        .modal-body { padding: 40px; color: #222; }
-        
-        /* BACK BUTTON IN MODAL */
+        @keyframes slideIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .modal-header-img { width: 100%; height: 350px; background-size: cover; background-position: center; }
+        .modal-body { padding: 40px; color: #333; }
         .back-btn {
             position: sticky; top: 20px; left: 20px; z-index: 10001;
-            padding: 10px 20px; background: #f1c40f; color: #000;
+            padding: 10px 25px; background: #f1c40f; color: #000;
             border: none; border-radius: 5px; font-weight: bold; cursor: pointer;
-            display: flex; align-items: center; gap: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
-        .back-btn:hover { background: #000; color: #fff; }
 
-        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 20px; }
-        .info-box h4 { color: #f39c12; text-transform: uppercase; margin-bottom: 10px; border-bottom: 2px solid #eee; padding-bottom: 5px; }
-        .info-box p { line-height: 1.6; font-size: 0.95rem; color: #555; }
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-top: 20px; }
+        .info-box h4 { color: #d35400; text-transform: uppercase; margin-bottom: 8px; font-size: 1.1rem; }
+        .info-box p { line-height: 1.6; font-size: 0.95rem; color: #444; }
 
-        @media (max-width: 768px) { .info-grid { grid-template-columns: 1fr; } .content h2 { font-size: 3.5rem; } }
+        @media (max-width: 768px) { .info-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -113,13 +101,13 @@
 
     <div class="slider-wrapper" id="slider"></div>
 
-    <!-- MODAL -->
     <div id="infoModal" class="modal">
         <div class="modal-content">
             <button class="back-btn" onclick="closeModal()">← БУЦАХ</button>
             <div id="modalImg" class="modal-header-img"></div>
             <div class="modal-body">
-                <h2 id="modalTitle" style="font-size: 2.5rem; font-family: 'Oswald';"></h2>
+                <h2 id="modalTitle" style="font-size: 2.5rem; font-family: 'Oswald'; margin-bottom: 5px;"></h2>
+                <p id="modalSlogan" style="color: #777; font-style: italic; margin-bottom: 20px;"></p>
                 <div class="info-grid" id="modalGrid"></div>
             </div>
         </div>
@@ -127,57 +115,27 @@
 
     <script>
         const countries = [
-            { 
-                name: "Монгол", 
-                img: "https://images.unsplash.com/photo-1521295121783-8a321d551ad2?q=80&w=1500",
-                data: {
-                    history: "Хүннү гүрнээс эхлээд Их Монгол улс хүртэлх нүүдэлчдийн агуу түүхтэй.",
-                    culture: "Наадам, морин хуур, хөөмий болон нүүдэлчин ахуй соёл.",
-                    nature: "Говийн элсэн манхан, Хөвсгөл нуур, Алтай таван богд.",
-                    food: "Бууз, хуушуур, хорхог болон цагаан идээ."
-                }
-            },
-            { 
-                name: "Япон", 
-                img: "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?q=80&w=1500",
-                data: {
-                    history: "Самурай нарын үеэс эхлэн орчин үеийн технологийн хүчирхэг гүрэн болсон.",
-                    culture: "Кимоно, цайны ёслол, анимэ болон сакура баяр.",
-                    nature: "Фүжи уул, Киотогийн эртний сүм хийдүүд.",
-                    food: "Сүши, рамэн, сашими болон матча цай."
-                }
-            },
-            { 
-                name: "БНСУ", 
-                img: "https://images.unsplash.com/photo-1517154421773-0529f29ea451?q=80&w=1500",
-                data: {
-                    history: "Гурван улсын үеэс эхлээд 'Хан мөрний гайхамшиг' хүртэлх хурдтай хөгжлийн түүх.",
-                    culture: "К-Поп, К-Драма, Ханбуг үндэсний хувцас.",
-                    nature: "Чэжү арал, Сөүл хотын Намсан цамхаг.",
-                    food: "Кимчи, бибимбап, солонгос BBQ."
-                }
-            },
-            { 
-                name: "Франц", 
-                img: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?q=80&w=1500",
-                data: {
-                    history: "Европын соёл иргэншил, хувьсгал болон урлагийн төв.",
-                    culture: "Өндөр загвар, Луврын музей, Каннын кино наадам.",
-                    nature: "Эйфелийн цамхаг, Францын Альпийн нуруу.",
-                    food: "Багет талх, бяслаг, дарс болон круассан."
-                }
-            }
-            // Бусад улсуудыг ижил бүтэцтэйгээр нэмж болно...
+            { name: "Монгол", slogan: "Цэлмэг хөх тэнгэрийн орон", img: "https://images.unsplash.com/photo-1521295121783-8a321d551ad2?auto=format&fit=crop&w=1600&q=80", data: { history: "Мянганы суут хүн Чингис хааны байгуулсан Их Монгол Улс.", culture: "Наадам, морин хуур, хөөмий болон нүүдэлчин ахуй.", nature: "Говийн элсэн манхан, Хөвсгөл нуур, Алтай таван богд.", food: "Хорхог, бууз, хуушуур болон цагаан идээ." } },
+            { name: "Япон", slogan: "Наран мандах зүгийн орон", img: "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=1600&q=80", data: { history: "Самурай нарын эрэлхэг түүх болон эзэн хааны засаглал.", culture: "Сүм хийд, кимоно, анимэ болон цайны ёслол.", nature: "Фүжи уул, сакура цэцэрлэгт хүрээлэн болон Киото.", food: "Сүши, рамэн, сашими болон амтлаг темпура." } },
+            { name: "Франц", slogan: "Урлаг ба хайр дурлалын өлгий", img: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=1600&q=80", data: { history: "Наполеоны байлдан дагуулалт болон Францын хувьсгал.", culture: "Өндөр загвар, Луврын музей, Каннын кино наадам.", nature: "Эйфелийн цамхаг, Альпийн нуруу, Прованс мужийн тал.", food: "Багет талх, Франц бяслаг, тансаг зэрэглэлийн дарс." } },
+            { name: "Итали", slogan: "Сэргэн мандалтын голомт", img: "https://images.unsplash.com/photo-1516483638261-f4dbaf036963?auto=format&fit=crop&w=1600&q=80", data: { history: "Эртний Ромын эзэнт гүрэн болон Ватикан хот.", culture: "Леонардо да Винчийн бүтээлүүд, Опера дуурь.", nature: "Колизей, Венецийн суваг, Тосканагийн толгод.", food: "Жинхэнэ Неаполь пицца, паста болон Желато зайрмаг." } },
+            { name: "Бразил", slogan: "Самба бүжиг ба хөлбөмбөгийн баяр", img: "https://images.unsplash.com/photo-1483728642387-6c3bdd6c93e5?auto=format&fit=crop&w=1600&q=80", data: { history: "Португалийн колончлолын үеэс эхтэй эрч хүчтэй түүх.", culture: "Рио-де-Жанейрогийн карнавал, Самба хэмнэл.", nature: "Амазоны ширүүн ой, Игуасу хүрхрээ, Копакабана эрэг.", food: "Фейжоада болон Бразил аргаар шарсан мах." } },
+            { name: "Египет", slogan: "Нууцлаг Пирамидуудын нутаг", img: "https://images.unsplash.com/photo-1503177119275-0aa32b3a9368?auto=format&fit=crop&w=1600&q=80", data: { history: "Фараонуудын засаглал, 5000 жилийн эртний иргэншил.", culture: "Иероглиф бичиг, эртний сүм хийд, Исламын соёл.", nature: "Гизагийн Пирамидууд, Нил мөрөн, Сахарын цөл.", food: "Кошари, Фул медамес болон Египет чихэр." } },
+            { name: "Австрали", slogan: "Байгалийн хосгүй гайхамшиг", img: "https://images.unsplash.com/photo-1523482580672-f109ba8cb9be?auto=format&fit=crop&w=1600&q=80", data: { history: "Абориген уугуул иргэдийн 60,000 жилийн түүх.", culture: "Серфинг, задгай талбайн грилл, Сиднейн дуурийн театр.", nature: "Их шүрэн хад, Улуру хад, Кенгуру арал.", food: "Мат мах, Вежемайт болон далайн шинэхэн бүтээгдэхүүн." } },
+            { name: "Турк", slogan: "Хоёр тивийн гүүр", img: "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?auto=format&fit=crop&w=1600&q=80", data: { history: "Византи болон Османы эзэнт гүрний нийслэл.", culture: "Дорнын болон Өрнийн соёлын гайхалтай хослол.", nature: "Каппадокигийн агаарын бөмбөлөг, Памуккале.", food: "Турк кебаб, пахлава болон Турк кофе." } },
+            { name: "Америк", slogan: "Мөрөөдөл биелэх эрх чөлөөний орон", img: "https://images.unsplash.com/photo-1485738422979-f5c462d49f74?auto=format&fit=crop&w=1600&q=80", data: { history: "1776 онд тусгаар тогтнолоо зарласан ардчиллын төв.", culture: "Холливуд, Жазз хөгжим, поп соёлын эх нутаг.", nature: "Гранд Каньон, Йеллоустоун парк, Статуя Либерти.", food: "Бургер, Нью-Йорк стилийн пицца, BBQ." } },
+            { name: "БНСУ", slogan: "Өглөөний амгалан нутаг", img: "https://images.unsplash.com/photo-1517154421773-0529f29ea451?auto=format&fit=crop&w=1600&q=80", data: { history: "Солонгосын хойгийн эртний хаант улсуудын түүх.", culture: "К-Поп, Солонгос кино (K-Drama), Ханбуг хувцас.", nature: "Намсан цамхаг, Чэжү арал, Сораксан уул.", food: "Кимчи, бибимбап, солонгос маягийн шарсан мах." } },
+            { name: "Энэтхэг", slogan: "Өнгө будгийн баяр", img: "https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&w=1600&q=80", data: { history: "Могол гүрний түүх болон Гандийн энх тайвны тэмцэл.", culture: "Холи баяр, Йога, Болливудын бүжиг.", nature: "Таж Махал, Ганга мөрөн, Гималайн нуруу.", food: "Карри, нан талх болон амтлагчтай цай." } },
+            { name: "Швейцарь", slogan: "Альпийн нурууны сувд", img: "https://images.unsplash.com/photo-1530122037265-a5f1f91d3b99?auto=format&fit=crop&w=1600&q=80", data: { history: "Дэлхийн дайнуудын үед төвийг сахисан энх тайванч улс.", culture: "Цагны үйлдвэрлэл, банкны систем, цэвэр цэгцтэй байдал.", nature: "Маттерхорн уул, Люцерн нуур, үзэсгэлэнт Альп.", food: "Швейцарь шоколад, Бяслагтай фондю." } },
+            { name: "Герман", slogan: "Инженерчлэл ба чанарын баталгаа", img: "https://images.unsplash.com/photo-1467269204594-9661b134dd2b?auto=format&fit=crop&w=1600&q=80", data: { history: "Берлиний хана нурж нэгдсэн түүхэн үйл явдал.", culture: "Октоберфест, Сонгодог хөгжмийн зохиолчид (Бетховен).", nature: "Хар ой (Black Forest), Нойшванштайн шилтгээн.", food: "Герман зайдас, Претзел болон шар айраг." } },
+            { name: "Англи", slogan: "Хааны гэр бүлийн уламжлалт орон", img: "https://images.unsplash.com/photo-1486299267070-83823f5448dd?auto=format&fit=crop&w=1600&q=80", data: { history: "Британийн эзэнт гүрний агуу ноёрхлын үе.", culture: "Англи цайны соёл, Шекспирийн зохиол, Премьер лиг.", nature: "Биг Бэн, Стоунхенж, Лондоны Тэмз мөрөн.", food: "Фиш энд чипс, Англи өглөөний цай." } },
+            { name: "Испани", slogan: "Нартай өдөр ба Фламенко хэмнэл", img: "https://images.unsplash.com/photo-1543783207-ec64e4d95325?auto=format&fit=crop&w=1600&q=80", data: { history: "Далайд гарц нээсэн аялагчдын түүх.", culture: "Фламенко бүжиг, бухын тулаан, Сиеста амралт.", nature: "Саграда Фамилиа, Ибиза арал, Барселона эрэг.", food: "Паэлья, Тапас болон шинэхэн далайн хоол." } },
+            { name: "Грекийн", slogan: "Өрнийн соёл иргэншлийн эхлэл", img: "https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=1600&q=80", data: { history: "Ардчилал, гүн ухаан болон Олимпын наадмын эх орон.", culture: "Грекийн домог зүй, эртний театрын урлаг.", nature: "Акрополис, Санторини арал, Миконос.", food: "Грек салат, Мусака болон Олив жимс." } },
+            { name: "Мексик", slogan: "Ацтекүүдийн өнгөлөг өв", img: "https://images.unsplash.com/photo-1518105779142-d975f22f1b0a?auto=format&fit=crop&w=1600&q=80", data: { history: "Маяа болон Ацтекийн эртний соёл иргэншил.", culture: "Мариачи хөгжим, Өнгөлөг багт наадам.", nature: "Чичен-Ица пирамид, Канкун далайн эрэг.", food: "Тако, Буррито болон халуун чили соус." } },
+            { name: "Орос", slogan: "Уудам тал нутаг ба сонгодог урлаг", img: "https://images.unsplash.com/photo-1513326738677-b964603b136d?auto=format&fit=crop&w=1600&q=80", data: { history: "Славян үндэстний түүх болон Сансрын судалгааны эхлэл.", culture: "Оросын Балет, уран зохиол (Толстой, Достоевский).", nature: "Байгаль нуур, Улаан талбай, Сибирийн тайга.", food: "Борщ, Пельмени болон Блинчик." } },
+            { name: "Канада", slogan: "Найрсаг хүмүүс ба цагаан туйлын орон", img: "https://images.unsplash.com/photo-1503614472-8c93d56e92ce?auto=format&fit=crop&w=1600&q=80", data: { history: "Франц болон Англи соёлын нөлөө бүхий түүх.", culture: "Хоккей, Олон үндэстний эв нэгдэл.", nature: "Ниагара хүрхрээ, Банфф үндэсний парк.", food: "Путин (Poutine) болон Агч модны сироп." } },
+            { name: "Тайланд", slogan: "Инээмсэглэлийн орон", img: "https://images.unsplash.com/photo-1528181304800-2f140819ad9c?auto=format&fit=crop&w=1600&q=80", data: { history: "Колончлолд хэзээ ч орж байгаагүй Сиамын хаант улс.", culture: "Бурхны шашны сүм хийд, Тай массаж.", nature: "Пхукет арал, Фи Фи арлууд, Бангкок хот.", food: "Том Ям шөл, Пад Тай болон халуун орны жимс." } }
         ];
-
-        // 20 улс болгохын тулд автомат нэмэлт (туршилтын зорилгоор)
-        for(let i=5; i<=20; i++) {
-            countries.push({
-                name: `Улс ${i}`,
-                img: `https://picsum.photos/seed/${i}/1500/1000`,
-                data: { history: "Түүхэн мэдээлэл удахгүй...", culture: "Соёлын мэдээлэл удахгүй...", nature: "Байгалийн мэдээлэл...", food: "Хоолны мэдээлэл..." }
-            });
-        }
 
         let currentIndex = 0;
         const slider = document.getElementById('slider');
@@ -187,6 +145,8 @@
         const menuBtn = document.getElementById('menuBtn');
 
         function build() {
+            slider.innerHTML = '';
+            countryList.innerHTML = '';
             countries.forEach((c, i) => {
                 const li = document.createElement('li');
                 li.className = 'country-item';
@@ -197,7 +157,14 @@
                 const sec = document.createElement('div');
                 sec.className = 'section';
                 sec.style.backgroundImage = `url('${c.img}')`;
-                sec.innerHTML = `<div class="overlay"></div><div class="content"><h2>${c.name}</h2><button class="cta-button" onclick="openModal(${i})">Дэлгэрэнгүй танилцах</button></div>`;
+                sec.innerHTML = `
+                    <div class="overlay"></div>
+                    <div class="content">
+                        <h2>${c.name}</h2>
+                        <p class="slogan">${c.slogan}</p>
+                        <button class="cta-button" onclick="openModal(${i})">Дэлгэрэнгүй танилцах</button>
+                    </div>
+                `;
                 slider.appendChild(sec);
             });
         }
@@ -207,7 +174,8 @@
         function jump(i) {
             currentIndex = i;
             slider.style.transform = `translateY(-${i * 100}vh)`;
-            sidebar.classList.remove('open'); menuBtn.classList.remove('open');
+            sidebar.classList.remove('open');
+            menuBtn.classList.remove('open');
             updateActive();
         }
 
@@ -215,25 +183,17 @@
             document.querySelectorAll('.country-item').forEach((item, idx) => item.classList.toggle('active', idx === currentIndex));
         }
 
-        function filterCountries() {
-            const val = document.getElementById('searchInput').value.toLowerCase();
-            document.querySelectorAll('.country-item').forEach(item => {
-                item.style.display = item.innerText.toLowerCase().includes(val) ? "block" : "none";
-            });
-        }
-
         window.addEventListener('wheel', (e) => {
-            if (e.deltaY > 0) { header.classList.add('hide'); if (currentIndex < 19) jump(currentIndex + 1); }
-            else { header.classList.remove('hide'); if (currentIndex > 0) jump(currentIndex - 1); }
+            if (e.deltaY > 0) { if (currentIndex < 19) jump(currentIndex + 1); }
+            else { if (currentIndex > 0) jump(currentIndex - 1); }
         });
 
         function openModal(i) {
             const c = countries[i];
             document.getElementById('modalTitle').innerText = c.name;
+            document.getElementById('modalSlogan').innerText = c.slogan;
             document.getElementById('modalImg').style.backgroundImage = `url('${c.img}')`;
-            
-            const grid = document.getElementById('modalGrid');
-            grid.innerHTML = `
+            document.getElementById('modalGrid').innerHTML = `
                 <div class="info-box"><h4>📜 Түүх</h4><p>${c.data.history}</p></div>
                 <div class="info-box"><h4>🎨 Соёл</h4><p>${c.data.culture}</p></div>
                 <div class="info-box"><h4>⛰️ Байгаль</h4><p>${c.data.nature}</p></div>
@@ -243,6 +203,13 @@
         }
 
         function closeModal() { document.getElementById('infoModal').style.display = "none"; }
+
+        function filterCountries() {
+            const val = document.getElementById('searchInput').value.toLowerCase();
+            document.querySelectorAll('.country-item').forEach(item => {
+                item.style.display = item.innerText.toLowerCase().includes(val) ? "block" : "none";
+            });
+        }
 
         build();
         updateActive();
