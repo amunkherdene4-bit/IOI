@@ -1,1 +1,213 @@
-hi 
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Азийн 4 Улс | Танилцуулга</title>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Roboto:wght@300;400&display=swap" rel="stylesheet">
+    <style>
+        /* Үндсэн тохиргоо */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body, html { 
+            height: 100%; 
+            width: 100%; 
+            overflow: hidden; 
+            background-color: #000;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        /* Слайдер агуулагч */
+        .slider-wrapper {
+            width: 100%;
+            height: 100vh;
+            position: absolute;
+            top: 0;
+            left: 0;
+            transition: transform 1.2s cubic-bezier(0.86, 0, 0.07, 1);
+        }
+
+        /* Слайд бүрийн ерөнхий загвар */
+        .section {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            color: white;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        /* 4 Улсын зураг */
+        .section:nth-child(1) { background-image: url('https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?q=80&w=2000'); } /* Япон */
+        .section:nth-child(2) { background-image: url('https://images.unsplash.com/photo-1517154421773-0529f29ea451?q=80&w=2000'); } /* Солонгос */
+        .section:nth-child(3) { background-image: url('https://images.unsplash.com/photo-1547981609-4b6bfe67ca0b?q=80&w=2000'); } /* Хятад */
+        .section:nth-child(4) { background-image: url('https://images.unsplash.com/photo-1528127269322-539801943592?q=80&w=2000'); } /* Вьетнам */
+
+        /* Зургийг харанхуйлах давхарга */
+        .overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        /* Текст мэдээлэл */
+        .content {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            text-shadow: 2px 2px 15px rgba(0,0,0,0.8);
+            padding: 20px;
+        }
+
+        .content h1 {
+            font-family: 'Oswald', sans-serif;
+            font-size: clamp(3rem, 10vw, 6rem);
+            margin-bottom: 15px;
+            letter-spacing: 8px;
+            text-transform: uppercase;
+        }
+
+        .content p {
+            font-size: clamp(1rem, 4vw, 1.8rem);
+            font-weight: 300;
+            margin-bottom: 35px;
+            max-width: 800px;
+        }
+
+        /* Товчлуур */
+        .cta-button {
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            background-color: #f1c40f;
+            color: #111;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 700;
+            transition: 0.3s;
+            display: inline-block;
+        }
+
+        .cta-button:hover {
+            background-color: white;
+            transform: translateY(-5px);
+        }
+
+        /* Навигацийн цэгүүд */
+        .dots {
+            position: fixed;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 100;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            background: rgba(255,255,255,0.3);
+            margin: 20px 0;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: 0.4s;
+        }
+
+        .dot.active {
+            background: #f1c40f;
+            transform: scale(1.8);
+            box-shadow: 0 0 15px #f1c40f;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Баруун талын цэгүүд -->
+    <div class="dots">
+        <div class="dot active" onclick="jump(0)"></div>
+        <div class="dot" onclick="jump(1)"></div>
+        <div class="dot" onclick="jump(2)"></div>
+        <div class="dot" onclick="jump(3)"></div>
+    </div>
+
+    <!-- Үндсэн слайд хэсэг -->
+    <div class="slider-wrapper" id="slider">
+        
+        <!-- 1. ЯПОН -->
+        <div class="section">
+            <div class="overlay"></div>
+            <div class="content">
+                <h1>ЯПОН</h1>
+                <p>Наран мандах нутаг: Уламжлалт соёл болон орчин үеийн технологийн төгс зохицол.</p>
+                <a href="#" class="cta-button">ТАНИЛЦАХ</a>
+            </div>
+        </div>
+
+        <!-- 2. СОЛОНГОС -->
+        <div class="section">
+            <div class="overlay"></div>
+            <div class="content">
+                <h1>СОЛОНГОС</h1>
+                <p>Өглөөний амар амгалан нутаг: К-поп, хоолны соёл болон түүхэн дурсгалт газрууд.</p>
+                <a href="#" class="cta-button">ТАНИЛЦАХ</a>
+            </div>
+        </div>
+
+        <!-- 3. ХЯТАД -->
+        <div class="section">
+            <div class="overlay"></div>
+            <div class="content">
+                <h1>ХЯТАД</h1>
+                <p>Тэнгэрийн доорх гүрэн: Цагаан хэрэм болон хурдтай хөгжиж буй их хотууд.</p>
+                <a href="#" class="cta-button">ТАНИЛЦАХ</a>
+            </div>
+        </div>
+
+        <!-- 4. ВЬЕТНАМ -->
+        <div class="section">
+            <div class="overlay"></div>
+            <div class="content">
+                <h1>ВЬЕТНАМ</h1>
+                <p>Зүүн өмнөд Азийн сувд: Үзэсгэлэнт байгаль, Халонг булан болон баялаг түүх.</p>
+                <a href="#" class="cta-button">ТАНИЛЦАХ</a>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const slider = document.getElementById('slider');
+        const dots = document.querySelectorAll('.dot');
+        let index = 0;
+        const total = 4; // Нийт 4 улс
+
+        // Слайд солих функц
+        function update() {
+            slider.style.transform = `translateY(-${index * 100}vh)`;
+            dots.forEach(d => d.classList.remove('active'));
+            dots[index].classList.add('active');
+        }
+
+        // Автоматаар 3 секунд тутамд шилжих (3000ms)
+        let timer = setInterval(() => {
+            index = (index + 1) % total;
+            update();
+        }, 3000);
+
+        // Цэг дээр дарахад шилжих
+        function jump(n) {
+            index = n;
+            update();
+            // Дарахад таймерыг шинэчлэх (3 секундыг дахин тоолж эхэлнэ)
+            clearInterval(timer);
+            timer = setInterval(() => {
+                index = (index + 1) % total;
+                update();
+            }, 3000);
+        }
+    </script>
+
+</body>
+</html>
