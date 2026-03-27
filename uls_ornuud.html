@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Азийн 4 Улс | Соёлын Аялал</title>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body, html { height: 100%; width: 100%; overflow: hidden; background-color: #000; font-family: 'Roboto', sans-serif; }
+
+        /* Слайдер */
+        .slider-wrapper { width: 100%; height: 100vh; position: absolute; transition: transform 1.2s cubic-bezier(0.86, 0, 0.07, 1); }
+        .section { width: 100%; height: 100vh; display: flex; align-items: center; justify-content: center; position: relative; color: white; background-size: cover; background-position: center; }
+        
+        .section:nth-child(1) { background-image: url('https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?q=80&w=2000'); }
+        .section:nth-child(2) { background-image: url('https://images.unsplash.com/photo-1517154421773-0529f29ea451?q=80&w=2000'); }
+        .section:nth-child(3) { background-image: url('https://images.unsplash.com/photo-1547981609-4b6bfe67ca0b?q=80&w=2000'); }
+        .section:nth-child(4) { background-image: url('https://images.unsplash.com/photo-1528127269322-539801943592?q=80&w=2000'); }
+
+        .overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); }
+        .content { position: relative; z-index: 10; text-align: center; }
+        .content h1 { font-family: 'Oswald', sans-serif; font-size: 5rem; letter-spacing: 8px; text-transform: uppercase; margin-bottom: 20px; }
+
+        .cta-button {
+            padding: 15px 40px; background-color: #f1c40f; color: #111;
+            text-decoration: none; border-radius: 50px; font-weight: 700;
+            cursor: pointer; transition: 0.3s; display: inline-block; border: none; font-size: 1rem;
+        }
+        .cta-button:hover { background-color: white; transform: scale(1.05); }
+
+        /* Мэдээллийн цонх (Modal) */
+        .modal {
+            display: none; position: fixed; z-index: 1000; left: 0; top: 0;
+            width: 100%; height: 100%; background-color: rgba(0,0,0,0.9);
+            align-items: center; justify-content: center; backdrop-filter: blur(8px);
+        }
+        .modal-content {
+            background-color: #fff; color: #333; width: 90%; max-width: 700px;
+            max-height: 85vh; border-radius: 20px; position: relative;
+            overflow-y: auto; animation: zoomIn 0.3s ease;
+        }
+        @keyframes zoomIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        
+        .modal-header-img { width: 100%; height: 250px; background-size: cover; background-position: center; border-radius: 20px 20px 0 0; }
+        .modal-body { padding: 30px; }
+        .close-btn { position: absolute; right: 20px; top: 15px; font-size: 30px; cursor: pointer; color: white; z-index: 1001; text-shadow: 0 0 10px rgba(0,0,0,0.5); }
+        
+        .modal-body h2 { font-family: 'Oswald', sans-serif; font-size: 2.5rem; margin-bottom: 10px; color: #111; }
+        .modal-body h3 { color: #f39c12; margin: 20px 0 10px 0; font-size: 1.2rem; }
+        .modal-body p { line-height: 1.7; font-size: 1rem; color: #555; margin-bottom: 15px; }
+        .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; background: #f9f9f9; padding: 15px; border-radius: 10px; margin-bottom: 20px; }
+        .stats div { font-weight: bold; color: #333; }
+
+        /* Навигацийн цэгүүд */
+        .dots { position: fixed; right: 30px; top: 50%; transform: translateY(-50%); z-index: 100; }
+        .dot { width: 12px; height: 12px; background: rgba(255,255,255,0.3); margin: 20px 0; border-radius: 50%; cursor: pointer; transition: 0.4s; }
+        .dot.active { background: #f1c40f; transform: scale(1.8); }
+    </style>
+</head>
+<body>
+
+    <div class="dots">
+        <div class="dot active" onclick="jump(0)"></div>
+        <div class="dot" onclick="jump(1)"></div>
+        <div class="dot" onclick="jump(2)"></div>
+        <div class="dot" onclick="jump(3)"></div>
+    </div>
+
+    <div class="slider-wrapper" id="slider">
+        <div class="section"><div class="overlay"></div><div class="content"><h1>ЯПОН</h1><button class="cta-button" onclick="showInfo(0)">ТАНИЛЦАХ</button></div></div>
+        <div class="section"><div class="overlay"></div><div class="content"><h1>СОЛОНГОС</h1><button class="cta-button" onclick="showInfo(1)">ТАНИЛЦАХ</button></div></div>
+        <div class="section"><div class="overlay"></div><div class="content"><h1>ХЯТАД</h1><button class="cta-button" onclick="showInfo(2)">ТАНИЛЦАХ</button></div></div>
+        <div class="section"><div class="overlay"></div><div class="content"><h1>ВЬЕТНАМ</h1><button class="cta-button" onclick="showInfo(3)">ТАНИЛЦАХ</button></div></div>
+    </div>
+
+    <!-- Мэдээллийн цонх -->
+    <div id="infoModal" class="modal">
+        <span class="close-btn" onclick="closeModal()">&times;</span>
+        <div class="modal-content">
+            <div id="modalImg" class="modal-header-img"></div>
+            <div class="modal-body">
+                <h2 id="modalTitle">Улсын нэр</h2>
+                <div class="stats">
+                    <div id="modalCap">Нийслэл: </div>
+                    <div id="modalPop">Хүн ам: </div>
+                </div>
+                <h3>Соёлын газрууд & Түүх</h3>
+                <p id="modalDesc">Мэдээлэл...</p>
+                <h3>Онцлох хоол</h3>
+                <p id="modalFood">Хоолны мэдээлэл...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const slider = document.getElementById('slider');
+        const dots = document.querySelectorAll('.dot');
+        let index = 0;
+        let isPaused = false;
+
+        const data = [
+            {
+                name: "Япон Улс",
+                cap: "Токио",
+                pop: "125.7 сая",
+                img: "https://images.unsplash.com/photo-1528360983277-13d401cdc186?q=80&w=1000",
+                desc: "Япон бол Киотогийн эртний сүм хийдүүдээс эхлээд Токиогийн гялалзсан гудамж хүртэлх соёлын асар том өв юм. Фүжи уул бол тэдний үндэсний бэлгэдэл. Түүхэндээ Самурай нарын ёс зүй, Кимоно соёл, Цайны ёслолоороо дэлхийд гайхагддаг.",
+                food: "Сүши, Рамэн, Матча цай"
+            },
+            {
+                name: "БНСУ",
+                cap: "Сөүл",
+                pop: "51.8 сая",
+                img: "https://images.unsplash.com/photo-1538661722438-47944307a778?q=80&w=1000",
+                desc: "Өмнөд Солонгос бол түүхэн Гёнбокгун ордноос эхлээд К-Поп соёл хүртэлх өргөн хүрээний түүхтэй. Чэжү арал болон Бусан хотын далайн эрэг нь жуулчдын хамгийн их очдог газрууд юм.",
+                food: "Кимчи, Бибимбап, Солонгос BBQ"
+            },
+            {
+                name: "Хятад Улс",
+                cap: "Бээжин",
+                pop: "1.4 тэрбум",
+                img: "https://images.unsplash.com/photo-1508804185872-d7badad00f7d?q=80&w=1000",
+                desc: "Дэлхийн хамгийн урт байгууламж болох Цагаан хэрэм, Хориотой хот зэрэг түүхэн дурсгалуудаараа алдартай. Хятадын соёл бол дэлхийн хамгийн эртний тасралтгүй үргэлжилж буй иргэншил юм.",
+                food: "Бээжин нугас, Дим сам, Сычуань хоол"
+            },
+            {
+                name: "Вьетнам Улс",
+                cap: "Ханой",
+                pop: "98.2 сая",
+                img: "https://images.unsplash.com/photo-1528127269322-539801943592?q=80&w=1000",
+                desc: "Вьетнамын Халонг булан бол байгалийн гайхамшиг юм. Хой Ан хотын эртний гудамжууд болон Франц колонийн үеийн архитектур нь энэ улсыг маш өвөрмөц болгодог.",
+                food: "Фо шөл, Бан ми хавчуургатай талх, Кофе"
+            }
+        ];
+
+        function update() {
+            slider.style.transform = `translateY(-${index * 100}vh)`;
+            dots.forEach(d => d.classList.remove('active'));
+            dots[index].classList.add('active');
+        }
+
+        let timer = setInterval(() => {
+            if(!isPaused) { index = (index + 1) % 4; update(); }
+        }, 3000);
+
+        function showInfo(i) {
+            isPaused = true;
+            const item = data[i];
+            document.getElementById('modalImg').style.backgroundImage = `url('${item.img}')`;
+            document.getElementById('modalTitle').innerText = item.name;
+            document.getElementById('modalCap').innerText = "Нийслэл: " + item.cap;
+            document.getElementById('modalPop').innerText = "Хүн ам: " + item.pop;
+            document.getElementById('modalDesc').innerText = item.desc;
+            document.getElementById('modalFood').innerText = item.food;
+            document.getElementById('infoModal').style.display = "flex";
+        }
+
+        function closeModal() {
+            document.getElementById('infoModal').style.display = "none";
+            isPaused = false;
+        }
+
+        function jump(n) {
+            index = n; update();
+            clearInterval(timer);
+            timer = setInterval(() => { if(!isPaused) { index = (index + 1) % 4; update(); } }, 3000);
+        }
+    </script>
+</body>
+</html>
