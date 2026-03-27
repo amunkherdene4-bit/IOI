@@ -3,169 +3,249 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Азийн 4 Улс | Соёлын Аялал</title>
+    <title>Global Travel | 20 Interactive Countries</title>
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body, html { height: 100%; width: 100%; overflow: hidden; background-color: #000; font-family: 'Roboto', sans-serif; }
 
-        /* Слайдер */
-        .slider-wrapper { width: 100%; height: 100vh; position: absolute; transition: transform 1.2s cubic-bezier(0.86, 0, 0.07, 1); }
-        .section { width: 100%; height: 100vh; display: flex; align-items: center; justify-content: center; position: relative; color: white; background-size: cover; background-position: center; }
-        
-        .section:nth-child(1) { background-image: url('https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?q=80&w=2000'); }
-        .section:nth-child(2) { background-image: url('https://images.unsplash.com/photo-1517154421773-0529f29ea451?q=80&w=2000'); }
-        .section:nth-child(3) { background-image: url('https://images.unsplash.com/photo-1547981609-4b6bfe67ca0b?q=80&w=2000'); }
-        .section:nth-child(4) { background-image: url('https://images.unsplash.com/photo-1528127269322-539801943592?q=80&w=2000'); }
+        /* HEADER */
+        header {
+            position: fixed; top: 0; left: 0; width: 100%; height: 70px;
+            background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(10px);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 1500; transition: 0.4s; border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        header h1 { color: #f1c40f; font-family: 'Oswald', sans-serif; letter-spacing: 3px; font-size: 1.5rem; }
+        header.hide { transform: translateY(-100%); }
 
-        .overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); }
-        .content { position: relative; z-index: 10; text-align: center; }
-        .content h1 { font-family: 'Oswald', sans-serif; font-size: 5rem; letter-spacing: 8px; text-transform: uppercase; margin-bottom: 20px; }
+        /* MENU BUTTON */
+        .menu-toggle {
+            position: fixed; top: 20px; left: 20px; z-index: 2500;
+            cursor: pointer; display: flex; flex-direction: column; gap: 5px;
+            padding: 10px; background: rgba(0,0,0,0.6); border-radius: 5px;
+        }
+        .menu-toggle div { width: 25px; height: 3px; background: #f1c40f; transition: 0.3s; }
+        .menu-toggle.open .line1 { transform: rotate(45deg) translate(5px, 6px); }
+        .menu-toggle.open .line2 { opacity: 0; }
+        .menu-toggle.open .line3 { transform: rotate(-45deg) translate(5px, -6px); }
+
+        /* SIDEBAR */
+        .sidebar {
+            position: fixed; left: -320px; top: 0; height: 100vh; width: 320px;
+            background: rgba(10, 10, 10, 0.98); backdrop-filter: blur(20px);
+            z-index: 2000; padding: 80px 20px 20px 20px;
+            transition: 0.5s cubic-bezier(0.77, 0, 0.175, 1); border-right: 2px solid #f1c40f;
+        }
+        .sidebar.open { left: 0; }
+
+        .search-container input {
+            width: 100%; padding: 12px 20px; border-radius: 25px; border: 1px solid #f1c40f;
+            background: rgba(255,255,255,0.05); color: #fff; outline: none; margin-bottom: 20px;
+        }
+
+        .country-list { height: calc(100vh - 200px); overflow-y: auto; list-style: none; }
+        .country-item {
+            color: #888; padding: 12px; cursor: pointer; border-radius: 8px;
+            transition: 0.2s; border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .country-item:hover { background: rgba(241, 196, 15, 0.1); color: #f1c40f; }
+        .country-item.active { background: #f1c40f; color: #000; font-weight: 700; }
+
+        /* SLIDER */
+        .slider-wrapper { width: 100%; height: 100vh; position: absolute; transition: transform 1s ease-in-out; }
+        .section {
+            width: 100%; height: 100vh; display: flex; align-items: center; justify-content: center;
+            background-size: cover; background-position: center; position: relative;
+        }
+        .overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.8) 100%); }
+        .content { position: relative; z-index: 10; text-align: center; color: white; padding: 0 15%; }
+        .content h2 { font-family: 'Oswald', sans-serif; font-size: clamp(3rem, 8vw, 6rem); text-transform: uppercase; margin-bottom: 20px; text-shadow: 0 10px 20px rgba(0,0,0,0.5); }
 
         .cta-button {
-            padding: 15px 40px; background-color: #f1c40f; color: #111;
-            text-decoration: none; border-radius: 50px; font-weight: 700;
-            cursor: pointer; transition: 0.3s; display: inline-block; border: none; font-size: 1rem;
+            padding: 18px 50px; background: #f1c40f; border: none; border-radius: 50px;
+            font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 1rem; text-transform: uppercase;
         }
-        .cta-button:hover { background-color: white; transform: scale(1.05); }
+        .cta-button:hover { background: #fff; transform: scale(1.05); box-shadow: 0 0 30px rgba(241,196,15,0.3); }
 
-        /* Мэдээллийн цонх (Modal) */
+        /* ENHANCED MODAL */
         .modal {
-            display: none; position: fixed; z-index: 1000; left: 0; top: 0;
-            width: 100%; height: 100%; background-color: rgba(0,0,0,0.9);
-            align-items: center; justify-content: center; backdrop-filter: blur(8px);
+            display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95); align-items: center; justify-content: center;
         }
         .modal-content {
-            background-color: #fff; color: #333; width: 90%; max-width: 700px;
-            max-height: 85vh; border-radius: 20px; position: relative;
-            overflow-y: auto; animation: zoomIn 0.3s ease;
+            background: #fff; width: 95%; max-width: 800px; max-height: 90vh;
+            border-radius: 20px; overflow-y: auto; position: relative; animation: slideIn 0.4s ease;
         }
-        @keyframes zoomIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        @keyframes slideIn { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         
-        .modal-header-img { width: 100%; height: 250px; background-size: cover; background-position: center; border-radius: 20px 20px 0 0; }
-        .modal-body { padding: 30px; }
-        .close-btn { position: absolute; right: 20px; top: 15px; font-size: 30px; cursor: pointer; color: white; z-index: 1001; text-shadow: 0 0 10px rgba(0,0,0,0.5); }
+        .modal-header-img { width: 100%; height: 350px; background-size: cover; background-position: center; position: relative; }
+        .modal-body { padding: 40px; color: #222; }
         
-        .modal-body h2 { font-family: 'Oswald', sans-serif; font-size: 2.5rem; margin-bottom: 10px; color: #111; }
-        .modal-body h3 { color: #f39c12; margin: 20px 0 10px 0; font-size: 1.2rem; }
-        .modal-body p { line-height: 1.7; font-size: 1rem; color: #555; margin-bottom: 15px; }
-        .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; background: #f9f9f9; padding: 15px; border-radius: 10px; margin-bottom: 20px; }
-        .stats div { font-weight: bold; color: #333; }
+        /* BACK BUTTON IN MODAL */
+        .back-btn {
+            position: sticky; top: 20px; left: 20px; z-index: 10001;
+            padding: 10px 20px; background: #f1c40f; color: #000;
+            border: none; border-radius: 5px; font-weight: bold; cursor: pointer;
+            display: flex; align-items: center; gap: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        .back-btn:hover { background: #000; color: #fff; }
 
-        /* Навигацийн цэгүүд */
-        .dots { position: fixed; right: 30px; top: 50%; transform: translateY(-50%); z-index: 100; }
-        .dot { width: 12px; height: 12px; background: rgba(255,255,255,0.3); margin: 20px 0; border-radius: 50%; cursor: pointer; transition: 0.4s; }
-        .dot.active { background: #f1c40f; transform: scale(1.8); }
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 20px; }
+        .info-box h4 { color: #f39c12; text-transform: uppercase; margin-bottom: 10px; border-bottom: 2px solid #eee; padding-bottom: 5px; }
+        .info-box p { line-height: 1.6; font-size: 0.95rem; color: #555; }
+
+        @media (max-width: 768px) { .info-grid { grid-template-columns: 1fr; } .content h2 { font-size: 3.5rem; } }
     </style>
 </head>
 <body>
 
-    <div class="dots">
-        <div class="dot active" onclick="jump(0)"></div>
-        <div class="dot" onclick="jump(1)"></div>
-        <div class="dot" onclick="jump(2)"></div>
-        <div class="dot" onclick="jump(3)"></div>
+    <header id="mainHeader"><h1>GLOBAL EXPLORER</h1></header>
+
+    <div class="menu-toggle" id="menuBtn">
+        <div class="line1"></div><div class="line2"></div><div class="line3"></div>
     </div>
 
-    <div class="slider-wrapper" id="slider">
-        <div class="section"><div class="overlay"></div><div class="content"><h1>ЯПОН</h1><button class="cta-button" onclick="showInfo(0)">ТАНИЛЦАХ</button></div></div>
-        <div class="section"><div class="overlay"></div><div class="content"><h1>СОЛОНГОС</h1><button class="cta-button" onclick="showInfo(1)">ТАНИЛЦАХ</button></div></div>
-        <div class="section"><div class="overlay"></div><div class="content"><h1>ХЯТАД</h1><button class="cta-button" onclick="showInfo(2)">ТАНИЛЦАХ</button></div></div>
-        <div class="section"><div class="overlay"></div><div class="content"><h1>ВЬЕТНАМ</h1><button class="cta-button" onclick="showInfo(3)">ТАНИЛЦАХ</button></div></div>
+    <div class="sidebar" id="sidebar">
+        <div class="search-container"><input type="text" id="searchInput" placeholder="Улс хайх..." onkeyup="filterCountries()"></div>
+        <ul class="country-list" id="countryList"></ul>
     </div>
 
-    <!-- Мэдээллийн цонх -->
+    <div class="slider-wrapper" id="slider"></div>
+
+    <!-- MODAL -->
     <div id="infoModal" class="modal">
-        <span class="close-btn" onclick="closeModal()">&times;</span>
         <div class="modal-content">
+            <button class="back-btn" onclick="closeModal()">← БУЦАХ</button>
             <div id="modalImg" class="modal-header-img"></div>
             <div class="modal-body">
-                <h2 id="modalTitle">Улсын нэр</h2>
-                <div class="stats">
-                    <div id="modalCap">Нийслэл: </div>
-                    <div id="modalPop">Хүн ам: </div>
-                </div>
-                <h3>Соёлын газрууд & Түүх</h3>
-                <p id="modalDesc">Мэдээлэл...</p>
-                <h3>Онцлох хоол</h3>
-                <p id="modalFood">Хоолны мэдээлэл...</p>
+                <h2 id="modalTitle" style="font-size: 2.5rem; font-family: 'Oswald';"></h2>
+                <div class="info-grid" id="modalGrid"></div>
             </div>
         </div>
     </div>
 
     <script>
-        const slider = document.getElementById('slider');
-        const dots = document.querySelectorAll('.dot');
-        let index = 0;
-        let isPaused = false;
-
-        const data = [
-            {
-                name: "Япон Улс",
-                cap: "Токио",
-                pop: "125.7 сая",
-                img: "https://images.unsplash.com/photo-1528360983277-13d401cdc186?q=80&w=1000",
-                desc: "Япон бол Киотогийн эртний сүм хийдүүдээс эхлээд Токиогийн гялалзсан гудамж хүртэлх соёлын асар том өв юм. Фүжи уул бол тэдний үндэсний бэлгэдэл. Түүхэндээ Самурай нарын ёс зүй, Кимоно соёл, Цайны ёслолоороо дэлхийд гайхагддаг.",
-                food: "Сүши, Рамэн, Матча цай"
+        const countries = [
+            { 
+                name: "Монгол", 
+                img: "https://images.unsplash.com/photo-1521295121783-8a321d551ad2?q=80&w=1500",
+                data: {
+                    history: "Хүннү гүрнээс эхлээд Их Монгол улс хүртэлх нүүдэлчдийн агуу түүхтэй.",
+                    culture: "Наадам, морин хуур, хөөмий болон нүүдэлчин ахуй соёл.",
+                    nature: "Говийн элсэн манхан, Хөвсгөл нуур, Алтай таван богд.",
+                    food: "Бууз, хуушуур, хорхог болон цагаан идээ."
+                }
             },
-            {
-                name: "БНСУ",
-                cap: "Сөүл",
-                pop: "51.8 сая",
-                img: "https://images.unsplash.com/photo-1538661722438-47944307a778?q=80&w=1000",
-                desc: "Өмнөд Солонгос бол түүхэн Гёнбокгун ордноос эхлээд К-Поп соёл хүртэлх өргөн хүрээний түүхтэй. Чэжү арал болон Бусан хотын далайн эрэг нь жуулчдын хамгийн их очдог газрууд юм.",
-                food: "Кимчи, Бибимбап, Солонгос BBQ"
+            { 
+                name: "Япон", 
+                img: "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?q=80&w=1500",
+                data: {
+                    history: "Самурай нарын үеэс эхлэн орчин үеийн технологийн хүчирхэг гүрэн болсон.",
+                    culture: "Кимоно, цайны ёслол, анимэ болон сакура баяр.",
+                    nature: "Фүжи уул, Киотогийн эртний сүм хийдүүд.",
+                    food: "Сүши, рамэн, сашими болон матча цай."
+                }
             },
-            {
-                name: "Хятад Улс",
-                cap: "Бээжин",
-                pop: "1.4 тэрбум",
-                img: "https://images.unsplash.com/photo-1508804185872-d7badad00f7d?q=80&w=1000",
-                desc: "Дэлхийн хамгийн урт байгууламж болох Цагаан хэрэм, Хориотой хот зэрэг түүхэн дурсгалуудаараа алдартай. Хятадын соёл бол дэлхийн хамгийн эртний тасралтгүй үргэлжилж буй иргэншил юм.",
-                food: "Бээжин нугас, Дим сам, Сычуань хоол"
+            { 
+                name: "БНСУ", 
+                img: "https://images.unsplash.com/photo-1517154421773-0529f29ea451?q=80&w=1500",
+                data: {
+                    history: "Гурван улсын үеэс эхлээд 'Хан мөрний гайхамшиг' хүртэлх хурдтай хөгжлийн түүх.",
+                    culture: "К-Поп, К-Драма, Ханбуг үндэсний хувцас.",
+                    nature: "Чэжү арал, Сөүл хотын Намсан цамхаг.",
+                    food: "Кимчи, бибимбап, солонгос BBQ."
+                }
             },
-            {
-                name: "Вьетнам Улс",
-                cap: "Ханой",
-                pop: "98.2 сая",
-                img: "https://images.unsplash.com/photo-1528127269322-539801943592?q=80&w=1000",
-                desc: "Вьетнамын Халонг булан бол байгалийн гайхамшиг юм. Хой Ан хотын эртний гудамжууд болон Франц колонийн үеийн архитектур нь энэ улсыг маш өвөрмөц болгодог.",
-                food: "Фо шөл, Бан ми хавчуургатай талх, Кофе"
+            { 
+                name: "Франц", 
+                img: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?q=80&w=1500",
+                data: {
+                    history: "Европын соёл иргэншил, хувьсгал болон урлагийн төв.",
+                    culture: "Өндөр загвар, Луврын музей, Каннын кино наадам.",
+                    nature: "Эйфелийн цамхаг, Францын Альпийн нуруу.",
+                    food: "Багет талх, бяслаг, дарс болон круассан."
+                }
             }
+            // Бусад улсуудыг ижил бүтэцтэйгээр нэмж болно...
         ];
 
-        function update() {
-            slider.style.transform = `translateY(-${index * 100}vh)`;
-            dots.forEach(d => d.classList.remove('active'));
-            dots[index].classList.add('active');
+        // 20 улс болгохын тулд автомат нэмэлт (туршилтын зорилгоор)
+        for(let i=5; i<=20; i++) {
+            countries.push({
+                name: `Улс ${i}`,
+                img: `https://picsum.photos/seed/${i}/1500/1000`,
+                data: { history: "Түүхэн мэдээлэл удахгүй...", culture: "Соёлын мэдээлэл удахгүй...", nature: "Байгалийн мэдээлэл...", food: "Хоолны мэдээлэл..." }
+            });
         }
 
-        let timer = setInterval(() => {
-            if(!isPaused) { index = (index + 1) % 4; update(); }
-        }, 3000);
+        let currentIndex = 0;
+        const slider = document.getElementById('slider');
+        const countryList = document.getElementById('countryList');
+        const header = document.getElementById('mainHeader');
+        const sidebar = document.getElementById('sidebar');
+        const menuBtn = document.getElementById('menuBtn');
 
-        function showInfo(i) {
-            isPaused = true;
-            const item = data[i];
-            document.getElementById('modalImg').style.backgroundImage = `url('${item.img}')`;
-            document.getElementById('modalTitle').innerText = item.name;
-            document.getElementById('modalCap').innerText = "Нийслэл: " + item.cap;
-            document.getElementById('modalPop').innerText = "Хүн ам: " + item.pop;
-            document.getElementById('modalDesc').innerText = item.desc;
-            document.getElementById('modalFood').innerText = item.food;
+        function build() {
+            countries.forEach((c, i) => {
+                const li = document.createElement('li');
+                li.className = 'country-item';
+                li.innerHTML = `${i + 1}. ${c.name}`;
+                li.onclick = () => jump(i);
+                countryList.appendChild(li);
+
+                const sec = document.createElement('div');
+                sec.className = 'section';
+                sec.style.backgroundImage = `url('${c.img}')`;
+                sec.innerHTML = `<div class="overlay"></div><div class="content"><h2>${c.name}</h2><button class="cta-button" onclick="openModal(${i})">Дэлгэрэнгүй танилцах</button></div>`;
+                slider.appendChild(sec);
+            });
+        }
+
+        menuBtn.onclick = () => { sidebar.classList.toggle('open'); menuBtn.classList.toggle('open'); };
+
+        function jump(i) {
+            currentIndex = i;
+            slider.style.transform = `translateY(-${i * 100}vh)`;
+            sidebar.classList.remove('open'); menuBtn.classList.remove('open');
+            updateActive();
+        }
+
+        function updateActive() {
+            document.querySelectorAll('.country-item').forEach((item, idx) => item.classList.toggle('active', idx === currentIndex));
+        }
+
+        function filterCountries() {
+            const val = document.getElementById('searchInput').value.toLowerCase();
+            document.querySelectorAll('.country-item').forEach(item => {
+                item.style.display = item.innerText.toLowerCase().includes(val) ? "block" : "none";
+            });
+        }
+
+        window.addEventListener('wheel', (e) => {
+            if (e.deltaY > 0) { header.classList.add('hide'); if (currentIndex < 19) jump(currentIndex + 1); }
+            else { header.classList.remove('hide'); if (currentIndex > 0) jump(currentIndex - 1); }
+        });
+
+        function openModal(i) {
+            const c = countries[i];
+            document.getElementById('modalTitle').innerText = c.name;
+            document.getElementById('modalImg').style.backgroundImage = `url('${c.img}')`;
+            
+            const grid = document.getElementById('modalGrid');
+            grid.innerHTML = `
+                <div class="info-box"><h4>📜 Түүх</h4><p>${c.data.history}</p></div>
+                <div class="info-box"><h4>🎨 Соёл</h4><p>${c.data.culture}</p></div>
+                <div class="info-box"><h4>⛰️ Байгаль</h4><p>${c.data.nature}</p></div>
+                <div class="info-box"><h4>🍲 Хоол</h4><p>${c.data.food}</p></div>
+            `;
             document.getElementById('infoModal').style.display = "flex";
         }
 
-        function closeModal() {
-            document.getElementById('infoModal').style.display = "none";
-            isPaused = false;
-        }
+        function closeModal() { document.getElementById('infoModal').style.display = "none"; }
 
-        function jump(n) {
-            index = n; update();
-            clearInterval(timer);
-            timer = setInterval(() => { if(!isPaused) { index = (index + 1) % 4; update(); } }, 3000);
-        }
+        build();
+        updateActive();
     </script>
 </body>
 </html>

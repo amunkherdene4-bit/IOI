@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Travel | Interactive 20</title>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body, html { height: 100%; width: 100%; overflow: hidden; background-color: #000; font-family: 'Roboto', sans-serif; }
+
+        /* --- SMART HEADER --- */
+        header {
+            position: fixed;
+            top: 0; left: 0; width: 100%;
+            height: 70px;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1500;
+            transition: transform 0.4s ease;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        header h1 { color: #f1c40f; font-family: 'Oswald', sans-serif; letter-spacing: 3px; font-size: 1.5rem; }
+        header.hide { transform: translateY(-100%); }
+
+        /* --- HAMBURGER MENU ICON --- */
+        .menu-toggle {
+            position: fixed;
+            top: 20px; left: 20px;
+            z-index: 2500;
+            cursor: pointer;
+            display: flex; flex-direction: column; gap: 5px;
+            padding: 10px; background: rgba(0,0,0,0.5); border-radius: 5px;
+        }
+        .menu-toggle div { width: 25px; height: 3px; background: #f1c40f; transition: 0.3s; }
+        .menu-toggle.open .line1 { transform: rotate(45deg) translate(5px, 6px); }
+        .menu-toggle.open .line2 { opacity: 0; }
+        .menu-toggle.open .line3 { transform: rotate(-45deg) translate(5px, -6px); }
+
+        /* --- SIDEBAR --- */
+        .sidebar {
+            position: fixed;
+            left: -300px; top: 0; height: 100vh; width: 300px;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(20px);
+            z-index: 2000;
+            padding: 80px 20px 20px 20px;
+            transition: 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+            border-right: 2px solid #f1c40f;
+        }
+        .sidebar.open { left: 0; }
+
+        /* --- SEARCH BAR --- */
+        .search-container { margin-bottom: 20px; }
+        .search-container input {
+            width: 100%; padding: 12px; border-radius: 25px; border: 1px solid #f1c40f;
+            background: rgba(255,255,255,0.1); color: #fff; outline: none;
+        }
+
+        .country-list { height: calc(100vh - 200px); overflow-y: auto; list-style: none; }
+        .country-item {
+            color: #bbb; padding: 12px; cursor: pointer; border-radius: 8px;
+            transition: 0.2s; margin-bottom: 5px;
+        }
+        .country-item:hover { background: rgba(241, 196, 15, 0.2); color: #f1c40f; }
+        .country-item.active { background: #f1c40f; color: #000; font-weight: bold; }
+
+        /* --- SLIDER --- */
+        .slider-wrapper { width: 100%; height: 100vh; position: absolute; transition: transform 1s ease-in-out; }
+        .section {
+            width: 100%; height: 100vh; display: flex; align-items: center; justify-content: center;
+            background-size: cover; background-position: center; position: relative;
+        }
+        .overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); }
+        .content { position: relative; z-index: 10; text-align: center; color: white; }
+        .content h2 { font-family: 'Oswald', sans-serif; font-size: 5rem; text-transform: uppercase; }
+
+        .cta-button {
+            margin-top: 20px; padding: 15px 40px; background: #f1c40f; border: none;
+            border-radius: 50px; font-weight: bold; cursor: pointer; transition: 0.3s;
+        }
+        .cta-button:hover { background: #fff; transform: scale(1.1); }
+
+        /* --- MODAL --- */
+        .modal {
+            display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9); align-items: center; justify-content: center;
+        }
+        .modal-content { background: #fff; width: 90%; max-width: 500px; border-radius: 15px; overflow: hidden; position: relative; }
+        .modal-body { padding: 30px; color: #333; }
+        .close-modal { position: absolute; top: 15px; right: 20px; font-size: 25px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <header id="mainHeader">
+        <h1>GLOBAL EXPLORER</h1>
+    </header>
+
+    <div class="menu-toggle" id="menuBtn">
+        <div class="line1"></div>
+        <div class="line2"></div>
+        <div class="line3"></div>
+    </div>
+
+    <div class="sidebar" id="sidebar">
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Улс хайх..." onkeyup="filterCountries()">
+        </div>
+        <ul class="country-list" id="countryList"></ul>
+    </div>
+
+    <div class="slider-wrapper" id="slider"></div>
+
+    <div id="infoModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <div id="modalImg" style="height: 200px; background-size: cover;"></div>
+            <div class="modal-body">
+                <h2 id="modalTitle"></h2>
+                <p id="modalDesc" style="margin-top: 15px;"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const countries = [
+            { name: "Монгол", desc: "Нүүдэлчин соёлын өлгий нутаг.", img: "https://images.unsplash.com/photo-1521295121783-8a321d551ad2?q=80&w=1500" },
+            { name: "Япон", desc: "Сакура болон өндөр технологийн эх орон.", img: "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?q=80&w=1500" },
+            { name: "БНСУ", desc: "К-Поп болон орчин үеийн Сөүл хот.", img: "https://images.unsplash.com/photo-1517154421773-0529f29ea451?q=80&w=1500" },
+            { name: "Хятад", desc: "Цагаан хэрэм болон эртний соёл иргэншил.", img: "https://images.unsplash.com/photo-1547981609-4b6bfe67ca0b?q=80&w=1500" },
+            { name: "Вьетнам", desc: "Халонг булан болон амтлаг хоол.", img: "https://images.unsplash.com/photo-1528127269322-539801943592?q=80&w=1500" },
+            { name: "Америк", desc: "Боломжоор дүүрэн эрх чөлөөний орон.", img: "https://images.unsplash.com/photo-1485738422979-f5c462d49f74?q=80&w=1500" },
+            { name: "Франц", desc: "Хайр дурлал, загвар болон Эйфелийн цамхаг.", img: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?q=80&w=1500" },
+            { name: "Итали", desc: "Пицца, паста болон Ромын түүх.", img: "https://images.unsplash.com/photo-1516483638261-f4dbaf036963?q=80&w=1500" },
+            { name: "Англи", desc: "Хааны ордон болон Лондоны манан.", img: "https://images.unsplash.com/photo-1486299267070-83823f5448dd?q=80&w=1500" },
+            { name: "Герман", desc: "Шар айраг болон инженерчлэлийн гайхамшиг.", img: "https://images.unsplash.com/photo-1467269204594-9661b134dd2b?q=80&w=1500" },
+            { name: "Бразил", desc: "Карнавал болон хөлбөмбөгийн баяр.", img: "https://images.unsplash.com/photo-1483728642387-6c3bdd6c93e5?q=80&w=1500" },
+            { name: "Египет", desc: "Пирамид болон Нил мөрний түүх.", img: "https://images.unsplash.com/photo-1503177119275-0aa32b3a9368?q=80&w=1500" },
+            { name: "Тайланд", desc: "Тай массаж болон үзэсгэлэнт арлууд.", img: "https://images.unsplash.com/photo-1528181304800-2f140819ad9c?q=80&w=1500" },
+            { name: "Австрали", desc: "Кенгуру болон Сиднейн дуурийн театр.", img: "https://images.unsplash.com/photo-1523482580672-f109ba8cb9be?q=80&w=1500" },
+            { name: "Канада", desc: "Агч модны навч болон цэлмэг нуурууд.", img: "https://images.unsplash.com/photo-1503614472-8c93d56e92ce?q=80&w=1500" },
+            { name: "Швейцарь", desc: "Шоколад болон Альпийн нуруу.", img: "https://images.unsplash.com/photo-1530122037265-a5f1f91d3b99?q=80&w=1500" },
+            { name: "Турк", desc: "Стамбулын захууд болон Каппадоки.", img: "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?q=80&w=1500" },
+            { name: "Грекийн", desc: "Олимпын өлгий болон Цагаан байшингууд.", img: "https://images.unsplash.com/photo-1533105079780-92b9be482077?q=80&w=1500" },
+            { name: "Орос", desc: "Байгаль нуур болон өргөн уудам нутаг.", img: "https://images.unsplash.com/photo-1513326738677-b964603b136d?q=80&w=1500" },
+            { name: "Энэтхэг", desc: "Халуун ногоотой хоол болон Таж Махал.", img: "https://images.unsplash.com/photo-1524492412937-b28074a5d7da?q=80&w=1500" }
+        ];
+
+        let currentIndex = 0;
+        const slider = document.getElementById('slider');
+        const countryList = document.getElementById('countryList');
+        const header = document.getElementById('mainHeader');
+        const sidebar = document.getElementById('sidebar');
+        const menuBtn = document.getElementById('menuBtn');
+
+        // Вэб бүтээх
+        countries.forEach((c, i) => {
+            const li = document.createElement('li');
+            li.className = 'country-item';
+            li.innerHTML = `${i + 1}. ${c.name}`;
+            li.onclick = () => jump(i);
+            countryList.appendChild(li);
+
+            const sec = document.createElement('div');
+            sec.className = 'section';
+            sec.style.backgroundImage = `url('${c.img}')`;
+            sec.innerHTML = `<div class="overlay"></div><div class="content"><h2>${c.name}</h2><button class="cta-button" onclick="openModal(${i})">ТАНИЛЦАХ</button></div>`;
+            slider.appendChild(sec);
+        });
+
+        // Hamburger Menu Toggle
+        menuBtn.onclick = () => {
+            sidebar.classList.toggle('open');
+            menuBtn.classList.toggle('open');
+        };
+
+        function jump(i) {
+            currentIndex = i;
+            slider.style.transform = `translateY(-${i * 100}vh)`;
+            sidebar.classList.remove('open');
+            menuBtn.classList.remove('open');
+            updateActive();
+        }
+
+        function updateActive() {
+            document.querySelectorAll('.country-item').forEach((item, idx) => {
+                item.classList.toggle('active', idx === currentIndex);
+            });
+        }
+
+        // Search Filter
+        function filterCountries() {
+            const val = document.getElementById('searchInput').value.toLowerCase();
+            document.querySelectorAll('.country-item').forEach(item => {
+                const text = item.innerText.toLowerCase();
+                item.style.display = text.includes(val) ? "block" : "none";
+            });
+        }
+
+        // Smart Header Hide on Scroll
+        window.addEventListener('wheel', (e) => {
+            if (e.deltaY > 0) {
+                header.classList.add('hide');
+                if (currentIndex < 19) jump(currentIndex + 1);
+            } else {
+                header.classList.remove('hide');
+                if (currentIndex > 0) jump(currentIndex - 1);
+            }
+        });
+
+        // Modal
+        function openModal(i) {
+            document.getElementById('modalTitle').innerText = countries[i].name;
+            document.getElementById('modalDesc').innerText = countries[i].desc;
+            document.getElementById('modalImg').style.backgroundImage = `url('${countries[i].img}')`;
+            document.getElementById('infoModal').style.display = "flex";
+        }
+        function closeModal() { document.getElementById('infoModal').style.display = "none"; }
+
+        updateActive();
+    </script>
+</body>
+</html>
